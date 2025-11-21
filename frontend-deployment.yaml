@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: cap1463-09  # CAMBIO: Namespace añadido.
+  labels:
+    app: guestbook
+    tier: frontend
+spec:
+  # CAMBIO 5: Reducción de Escala Frontend
+  # El tutorial pide 3 réplicas; se reduce a 1 por limitaciones de cuota del cluster.
+  replicas: 1
+  selector:
+    matchLabels:
+      app: guestbook
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        app: guestbook
+        tier: frontend
+    spec:
+      containers:
+      - name: php-redis
+        # CAMBIO 6: Actualización de Imagen
+        # Se cambió de v4 a v5 porque la v4 no se descargaba correctamente (ImagePullBackOff).
+        image: gcr.io/google_samples/gb-frontend:v5
+        env:
+        - name: GET_HOSTS_FROM
+          value: dns
+        # CAMBIO 7: Recursos Mini
+        # Definición explícita de recursos bajos.
+        resources:
+          requests:
+            cpu: 25m
+            memory: 64Mi
+          limits:
+            cpu: 100m
+            memory: 128Mi
+        ports:
+        - containerPort: 80

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  namespace: cap1463-09  # CAMBIO: Namespace añadido.
+  labels:
+    app: guestbook
+    tier: frontend
+spec:
+  # CAMBIO 8: Tipo de Servicio
+  # Se cambia a LoadBalancer para solicitar una IP externa al controlador del clúster.
+  type: LoadBalancer  
+  ports:
+  - port: 80
+  selector:
+    app: guestbook
+    tier: frontend

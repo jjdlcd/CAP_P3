@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-follower
+  namespace: cap1463-09  # CAMBIO: Namespace añadido.
+  labels:
+    app: redis
+    role: follower
+    tier: backend
+spec:
+  # CAMBIO 3: Reducción de Escala
+  # Se reduce de 2 a 1 réplica para minimizar el consumo de pods y cumplir con la cuota.
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+        role: follower
+        tier: backend
+    spec:
+      containers:
+      - name: follower
+        image: gcr.io/google_samples/gb-redis-follower:v2
+        env:
+        - name: GET_HOSTS_FROM
+          value: dns
+        # CAMBIO 4: Recursos Mini
+        # Ajuste necesario para caber en la cuota junto con el líder y el frontend.
+        resources:
+          requests:
+            cpu: 25m
+            memory: 64Mi
+          limits:
+            cpu: 100m
+            memory: 128Mi
+        ports:
+        - containerPort: 6379

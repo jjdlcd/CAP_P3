@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-leader
+  # CAMBIO 1: Namespace
+  # Se añade el namespace explícito para desplegar en el entorno asignado y no en 'default'.
+  namespace: cap1463-09 
+  labels:
+    app: redis
+    role: leader
+    tier: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+        role: leader
+        tier: backend
+    spec:
+      containers:
+      - name: leader
+        image: "docker.io/redis:6.0.5"
+        # CAMBIO 2: Resource Quotas (Recursos Mini)
+        # Se definen límites estrictos y bajos (25m CPU / 64Mi RAM) para evitar el error
+        # "FailedCreate" por exceder la cuota de usuario (ResourceQuota) del laboratorio.
+        resources:
+          requests:
+            cpu: 25m
+            memory: 64Mi
+          limits:
+            cpu: 100m
+            memory: 128Mi
+        ports:
+        - containerPort: 6379
