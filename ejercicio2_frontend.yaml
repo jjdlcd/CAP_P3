@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "1"
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"labels":{"app":"guestbook","tier":"frontend"},"name":"frontend","namespace":"cap1463-09"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"guestbook","tier":"frontend"}},"template":{"metadata":{"labels":{"app":"guestbook","tier":"frontend"}},"spec":{"containers":[{"env":[{"name":"GET_HOSTS_FROM","value":"dns"}],"image":"gcr.io/google_samples/gb-frontend:v5","name":"php-redis","ports":[{"containerPort":80}],"resources":{"limits":{"cpu":"100m","memory":"128Mi"},"requests":{"cpu":"25m","memory":"64Mi"}}}]}}}}
+  creationTimestamp: "2025-11-21T22:03:23Z"
+  generation: 1
+  labels:
+    app: guestbook
+    tier: frontend
+  name: frontend
+  namespace: cap1463-09
+  resourceVersion: "66916178"
+  uid: 0d753d3d-e950-426b-9864-295403648d79
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: guestbook
+      tier: frontend
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: guestbook
+        tier: frontend
+    spec:
+      containers:
+      - env:
+        - name: GET_HOSTS_FROM
+          value: dns
+        image: gcr.io/google_samples/gb-frontend:v5
+        imagePullPolicy: IfNotPresent
+        name: php-redis
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 100m
+            memory: 128Mi
+          requests:
+            cpu: 25m
+            memory: 64Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+status:
+  availableReplicas: 1
+  conditions:
+  - lastTransitionTime: "2025-11-21T22:03:25Z"
+    lastUpdateTime: "2025-11-21T22:03:25Z"
+    message: Deployment has minimum availability.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: Available
+  - lastTransitionTime: "2025-11-21T22:03:23Z"
+    lastUpdateTime: "2025-11-21T22:03:25Z"
+    message: ReplicaSet "frontend-64576579d9" has successfully progressed.
+    reason: NewReplicaSetAvailable
+    status: "True"
+    type: Progressing
+  observedGeneration: 1
+  readyReplicas: 1
+  replicas: 1
+  updatedReplicas: 1
